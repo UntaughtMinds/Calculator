@@ -12,8 +12,8 @@ namespace Calculator
 {
     public partial class MainForm : Form
     {
-        private string currentNumberText = string.Empty;
-        private List<string> inputElement = new();
+        private string _currentNumberText = string.Empty;
+        private readonly List<string> _inputElement = new();
 
         public MainForm()
         {
@@ -39,94 +39,94 @@ namespace Calculator
 
         private void butNagate_Click(object sender, EventArgs e)
         {
-            if (currentNumberText != string.Empty)
+            if (_currentNumberText != string.Empty)
             {
-                inputElement.Add(currentNumberText);
+                _inputElement.Add(_currentNumberText);
             }
-            if (inputElement.Count != 0)
+            if (_inputElement.Count != 0)
             {
-                inputElement.Add("×");
+                _inputElement.Add("×");
             }
-            inputElement.Add("-1");
-            currentNumberText = string.Empty;
-            displaylblRes(currentNumberText);
-            displaylblExp();
+            _inputElement.Add("-1");
+            _currentNumberText = string.Empty;
+            DisplaylblRes(_currentNumberText);
+            DisplaylblExp();
         }
 
         private void butNum_Click(object sender, EventArgs e)
         {
             var button = sender as Button;
-            if (currentNumberText != null && button.Text == "." && currentNumberText.Contains("."))
+            if (_currentNumberText != null && button.Text == "." && _currentNumberText.Contains("."))
             {
                 return;
             }
-            currentNumberText += button.Text;
-            displaylblRes(currentNumberText);
-            displaylblExp();
+            _currentNumberText += button.Text;
+            DisplaylblRes(_currentNumberText);
+            DisplaylblExp();
         }
 
         private void butOperate_Click(object sender, EventArgs e)
         {
             var button = sender as Button;
-            if (inputElement.Count == 0 && currentNumberText == string.Empty)
+            if (_inputElement.Count == 0 && _currentNumberText == string.Empty)
             {
                 return;
             }
 
-            if (inputElement.Count > 0 && currentNumberText == string.Empty &&
-                (inputElement.Last() == "+" ||
-                inputElement.Last() == "-" ||
-                inputElement.Last() == "×" ||
-                inputElement.Last() == "÷"))
+            if (_inputElement.Count > 0 && _currentNumberText == string.Empty &&
+                (_inputElement.Last() == "+" ||
+                _inputElement.Last() == "-" ||
+                _inputElement.Last() == "×" ||
+                _inputElement.Last() == "÷"))
             {
-                inputElement[inputElement.Count - 1] = button.Text;
+                _inputElement[^1] = button.Text;
             }
             else
             {
-                inputElement.Add(currentNumberText);
-                inputElement.Add(button.Text);
+                _inputElement.Add(_currentNumberText);
+                _inputElement.Add(button.Text);
             }
 
-            currentNumberText = string.Empty;
-            displaylblRes(cal().ToString());
-            displaylblExp();
+            _currentNumberText = string.Empty;
+            DisplaylblRes(Cal().ToString());
+            DisplaylblExp();
         }
 
         private void butRes_Click(object sender, EventArgs e)
         {
-            if (inputElement.Count == 0)
+            if (_inputElement.Count == 0)
             {
                 return;
             }
-            inputElement.Add(currentNumberText);
-            inputElement.Add("=");
-            currentNumberText = string.Empty;
-            displaylblRes(cal());
-            displaylblExp();
-            inputElement.Clear();
+            _inputElement.Add(_currentNumberText);
+            _inputElement.Add("=");
+            _currentNumberText = string.Empty;
+            DisplaylblRes(Cal());
+            DisplaylblExp();
+            _inputElement.Clear();
         }
 
         private void butDel_Click(object sender, EventArgs e)
         {
-            currentNumberText.Remove(currentNumberText.Length - 1, 1);
-            displaylblRes(currentNumberText);
+            _currentNumberText.Remove(_currentNumberText.Length - 1, 1);
+            DisplaylblRes(_currentNumberText);
         }
 
         private void butC_Click(object sender, EventArgs e)
         {
-            currentNumberText = string.Empty;
-            inputElement.Clear();
-            displaylblRes(currentNumberText);
-            displaylblExp();
+            _currentNumberText = string.Empty;
+            _inputElement.Clear();
+            DisplaylblRes(_currentNumberText);
+            DisplaylblExp();
         }
 
         private void butCE_Click(object sender, EventArgs e)
         {
-            currentNumberText = string.Empty;
-            displaylblRes(currentNumberText);
+            _currentNumberText = string.Empty;
+            DisplaylblRes(_currentNumberText);
         }
 
-        private String cal()
+        private string Cal()
         {
             decimal tempNumber = 0.0M;
             string currentOperator = string.Empty;
@@ -134,9 +134,9 @@ namespace Calculator
 
             try
             {
-                for (int i = 0; i < inputElement.Count - 1; i++)
+                for (int i = 0; i < _inputElement.Count - 1; i++)
                 {
-                    var item = inputElement[i];
+                    var item = _inputElement[i];
                     switch (item)
                     {
                         case "+":
@@ -172,21 +172,21 @@ namespace Calculator
             catch (Exception)
             {
                 res = "出现错误";
-                currentNumberText = string.Empty;
-                inputElement.Clear();
-                displaylblExp();
+                _currentNumberText = string.Empty;
+                _inputElement.Clear();
+                DisplaylblExp();
             }
             return res;
         }
 
-        private void displaylblRes(string input)
+        private void DisplaylblRes(string input)
         {
             lblRes.Text = input;
         }
 
-        private void displaylblExp()
+        private void DisplaylblExp()
         {
-            lblExp.Text = string.Join(" ", inputElement);
+            lblExp.Text = string.Join(" ", _inputElement);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
